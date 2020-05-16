@@ -1,7 +1,14 @@
 package com.iron.hostingcontroll;
 
+import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,28 +24,52 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.iron.adapters.HostingAdapter;
 import com.iron.data.entities.HostingEntity;
 import com.iron.data.vm.HostingViewModel;
 import com.iron.model.HostingEntry;
-import com.iron.sql.hosting_entries.HostingEntriesAdapter;
-import com.iron.sql.hosting_entries.HostingEntryHelper;
+
 import com.iron.ui.Dialogs.DynamicDialog;
 import com.iron.ui.Dialogs.DynamicDialogFormListener;
+import com.iron.utils.CsvParser;
+import com.iron.utils.DomainChecker;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.json.JSONException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity  implements DynamicDialogFormListener {
+
+    private static final String FILE_PATH_1 = "dynamicsolutions.csv";
+    private static final String TAG = "KK";
+    private static final int FILE_ACCESS = 0;
+
+    private List<HostingEntity> currentEntities = new ArrayList<>();
 
     /**Room implementation*/
     private HostingViewModel hostingViewModel;
 
-
     private Context ctx;
     private DynamicDialog dialog;
-    private HostingEntryHelper db;
 
     private RecyclerView rvHostingList;
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +83,7 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
         rvHostingList = findViewById(R.id.rvHostingList);
         rvHostingList.setLayoutManager(new LinearLayoutManager(this));
         rvHostingList.setHasFixedSize(true);
+        rvHostingList.setItemViewCacheSize(40);
 
         final HostingAdapter adapter = new HostingAdapter();
         rvHostingList.setAdapter(adapter);
@@ -61,6 +93,7 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
         hostingViewModel.getAll().observe(this, new Observer<List<HostingEntity>>() {
             @Override
             public void onChanged(List<HostingEntity> hostingEntities) {
+                currentEntities =hostingEntities;
                 adapter.setList(hostingEntities);
             }
         });
@@ -78,29 +111,50 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
             }
         }).attachToRecyclerView(rvHostingList);
 
-
-
-//         db = new HostingEntryHelper(this);
-//        setContentView(R.layout.activity_main);
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-//        rvHostingList = findViewById(R.id.rvHostingList);
-//        rvHostingList.setLayoutManager(new LinearLayoutManager(this));
-//        rvHostingList.setHasFixedSize(true);
-
-//        rvHostingList.setAdapter(new HostingEntriesAdapter(db.getAllAsList()));
-
         dialog = new DynamicDialog.Builder(ctx).OnPositiveClicked(this).build();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.show();
+                //dialog.show();
+//                try {
+//                    testCsv();
+//                } catch (IOException | JSONException e) {
+//                    e.printStackTrace();
+//                }
+                String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                EasyPermissions.requestPermissions(MainActivity.this,"Se necesita permiso para leer archivos",FILE_ACCESS,perms);
+
+
             }
         });
     }
+
+    @AfterPermissionGranted(FILE_ACCESS)
+    public void filePermissionsResults(){
+        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+
+            Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+            chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+            chooseFile.setType("text/*");
+            chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+            startActivityForResult(chooseFile, 0);
+
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(MainActivity.this,"Se necesita permiso para leer archivos",FILE_ACCESS,perms);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,9 +170,13 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_delete_all:
+                hostingViewModel.deleteAll();
+                return true;
+            case R.id.action_update_all:
+                 updateData(currentEntities);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -126,12 +184,81 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
 
     @Override
     public void OnClick(HostingEntry post) {
-        boolean result  = db.add(post);
-        if (result){
-            Toast.makeText(this,"Se agrego: "+post.getUsername()+ " a la lista",Toast.LENGTH_SHORT).show();
-            rvHostingList.setAdapter(new HostingEntriesAdapter(db.getAllAsList()));
 
-        }
-        dialog.dismiss();
     }
+
+    private void updateData(final List<HostingEntity> hostingEntities){
+
+        progressDialog = new ProgressDialog(ctx);
+        progressDialog.setTitle("Actualizanto datos");
+        progressDialog.setMessage("0/"+hostingEntities.size());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMax(hostingEntities.size());
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        DomainChecker checker = DomainChecker.getInstance().setOnProgressListener(new DomainChecker.OnDomainCheckProgress() {
+            @Override
+            public void onProgressUpdate(int progress) {
+                progressDialog.setMessage(progress+"/"+hostingEntities.size());
+                progressDialog.setProgress(progress);
+            }
+        }).setOnResultListener(new DomainChecker.OnDomainCheckResultFromList() {
+            @Override
+            public void onResult(List<HostingEntity> resultList) {
+                hostingViewModel.update(resultList);
+                progressDialog.dismiss();
+                Toast.makeText(ctx,"Success",Toast.LENGTH_LONG).show();
+            }
+        });
+
+        checker.Starts(hostingEntities);
+    }
+
+    private void loadFromCsv(File file) throws IOException {
+
+        progressDialog = new ProgressDialog(ctx);
+        progressDialog.setTitle("Importando datos");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        CsvParser parser = CsvParser.getInstance(ctx).withParams(true,',');
+        parser.addProgressListener(new CsvParser.OnCsvParserProgress() {
+            @Override
+            public void onCsvParserProgress(String progress) {
+                progressDialog.setMessage(progress);
+            }
+        });
+        parser.addResultListener(new CsvParser.OnCsvParserResult() {
+            @Override
+            public void onCsvParserResult(List<HostingEntity> list) {
+                hostingViewModel.insert(list);
+                progressDialog.dismiss();
+            }
+        });
+        parser.parse(file);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0:
+                if (resultCode == -1) {
+                    Uri fileUri = data.getData();
+                    String filePath = fileUri.getPath().split(":")[1];
+                    File file = new File(filePath);
+                    try {
+                        loadFromCsv(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+
+    }
+
 }

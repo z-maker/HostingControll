@@ -54,39 +54,50 @@ public abstract class HostingDatabase extends RoomDatabase {
             dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
                     HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
                     HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
-            dao.insert(new HostingEntity("Vinos america 2","vinosamerica.com",
-                    HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
-                    HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
-            dao.insert(new HostingEntity("Vinos america 3","vinosamerica.com",
-                    HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
-                    HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
             dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
                     HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
                     HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
-            dao.insert(new HostingEntity("Vinos america 2","vinosamerica.com",
-                    HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
-                    HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
-            dao.insert(new HostingEntity("Vinos america 3","vinosamerica.com",
-                    HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
-                    HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
             dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
                     HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
                     HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
-            dao.insert(new HostingEntity("Vinos america 2","vinosamerica.com",
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
+            dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
                     HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
                     HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
-            dao.insert(new HostingEntity("Vinos america 3","vinosamerica.com",
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
+            dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
                     HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
                     HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
-                    "04-06-2020",HostingConstants.HOSING_ACTIVE,System.currentTimeMillis()));
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
+            dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
+                    HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
+                    HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
+            dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
+                    HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
+                    HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
+            dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
+                    HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
+                    HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
+            dao.insert(new HostingEntity("Vinos america 1","vinosamerica.com",
+                    HostingConstants.DOMAIN_ACTIVE,"29-03-2019","29-03-2020","29-13-2021",
+                    HostingConstants.MONTHLY_1,HostingConstants.PAYMENT_COMPLETE,200,250,"04-06-2020",
+                    "04-06-2020",HostingConstants.HOSING_ACTIVE,"Undefined",
+                    "03-05-2200","01-05-2000",System.currentTimeMillis()));
+
+
             return null;
         }
     }

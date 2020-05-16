@@ -54,7 +54,7 @@ public class HostingEntriesAdapter extends RecyclerView.Adapter<HostingEntriesAd
             txtUsername = itemView.findViewById(R.id.tvHostingName);
             txtDomain = itemView.findViewById(R.id.tvHostingDomain);
             txtInfo = itemView.findViewById(R.id.tvHostingInfo);
-            imgStatus = itemView.findViewById(R.id.imgStatus);
+
 
         }
 

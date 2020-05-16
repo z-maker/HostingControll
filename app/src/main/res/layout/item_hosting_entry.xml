@@ -16,24 +16,31 @@
         <LinearLayout
             android:layout_weight="8"
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content">
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
                 android:text="@string/app_name"
-                style="@style/TextAppearance.AppCompat.Title"
+                android:textSize="18sp"
                 android:id="@+id/tvHostingName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
+
+                android:textColor="@color/colorPrimary"
+                android:maxLines="1"
                 android:text="@string/app_name"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                android:textSize="16sp"
                 android:id="@+id/tvHostingDomain"
                 android:layout_width="match_parent"
+                android:ellipsize="end"
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
                 android:text="@string/app_name"
                 android:id="@+id/tvHostingInfo"
                 android:layout_width="match_parent"
@@ -43,18 +50,45 @@
         </LinearLayout>
 
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="4">
 
-            <ImageView
-                android:id="@+id/imgStatus"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="end|center_vertical"
-                android:src="@drawable/ic_suspend" />
+            <ImageButton
+                android:background="@drawable/background_radius"
+                android:id="@+id/ibtHostingStatus"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="left|top"
+                android:src="@drawable/ic_cloud_off" />
 
+            <ImageButton
+                android:background="@drawable/background_radius"
+                android:id="@+id/ibtDomainStatus"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center|top"
+                android:src="@drawable/ic_cloud_queue" />
+
+            <ImageButton
+                android:background="@drawable/background_radius"
+                android:id="@+id/ibtSslStatus"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|top"
+                android:src="@drawable/ic_lock_outline" />
+            <TextView
+                android:id="@+id/txtLink"
+                android:textSize="16sp"
+                android:textColor="@color/colorAccent"
+                android:gravity="center"
+                android:text="Abrir pagina"
+                android:layout_gravity="center|bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </FrameLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

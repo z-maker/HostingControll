@@ -26,7 +26,7 @@ public interface HostingDao {
     @Query("DELETE FROM hosting_table")
     void deleteAll();
 
-    @Query("SELECT * FROM hosting_table ORDER BY clientName DESC")
+    @Query("SELECT * FROM hosting_table ORDER BY clientName ASC")
     LiveData<List<HostingEntity>> getAll();
 
 
