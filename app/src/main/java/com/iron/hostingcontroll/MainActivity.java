@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -55,7 +57,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity  implements DynamicDialogFormListener {
 
-    private static final String FILE_PATH_1 = "dynamicsolutions.csv";
     private static final String TAG = "KK";
     private static final int FILE_ACCESS = 0;
 
@@ -65,9 +66,7 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
     private HostingViewModel hostingViewModel;
 
     private Context ctx;
-    private DynamicDialog dialog;
 
-    private RecyclerView rvHostingList;
     private ProgressDialog progressDialog;
 
     @Override
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
 
         ctx = this;
 
-        rvHostingList = findViewById(R.id.rvHostingList);
+        RecyclerView rvHostingList = findViewById(R.id.rvHostingList);
         rvHostingList.setLayoutManager(new LinearLayoutManager(this));
         rvHostingList.setHasFixedSize(true);
         rvHostingList.setItemViewCacheSize(40);
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
             }
         }).attachToRecyclerView(rvHostingList);
 
-        dialog = new DynamicDialog.Builder(ctx).OnPositiveClicked(this).build();
+        DynamicDialog dialog = new DynamicDialog.Builder(ctx).OnPositiveClicked(this).build();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        CsvParser parser = CsvParser.getInstance(ctx).withParams(true,',');
+        CsvParser parser = CsvParser.getInstance().withParams(true,',');
         parser.addProgressListener(new CsvParser.OnCsvParserProgress() {
             @Override
             public void onCsvParserProgress(String progress) {
@@ -241,6 +240,40 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
 
     }
 
+    public String getPathFromURI(Uri contentUri) {
+        String res = null;
+        String[] proj = {
+
+                MediaStore.Downloads.DISPLAY_NAME,
+                MediaStore.DownloadColumns.MIME_TYPE,
+                MediaStore.DownloadColumns.DOCUMENT_ID,
+                MediaStore.DownloadColumns.SIZE
+        };
+        Cursor cursor = getApplicationContext()
+                .getContentResolver()
+                .query(contentUri,
+                        proj, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            int index = 0;
+            while (index < cursor.getColumnCount()){
+
+                String re = cursor.getColumnName(index);
+
+                String val = cursor.getString(index);
+                Log.d("KK",re+"--"+val);
+                index++;
+
+            }
+            Uri rr = MediaStore.Files.getContentUri("raw",1182);
+            Log.d("KK",rr.toString());
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.DownloadColumns.DOCUMENT_ID);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -248,7 +281,7 @@ public class MainActivity extends AppCompatActivity  implements DynamicDialogFor
             case 0:
                 if (resultCode == -1) {
                     Uri fileUri = data.getData();
-                    String filePath = fileUri.getPath().split(":")[1];
+                    String filePath =  getPathFromURI(fileUri);//fileUri.getPath().split(":")[1];
                     File file = new File(filePath);
                     try {
                         loadFromCsv(file);

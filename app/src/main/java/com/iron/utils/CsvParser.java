@@ -1,5 +1,6 @@
 package com.iron.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.iron.data.entities.HostingEntity;
 
@@ -25,19 +27,17 @@ public class CsvParser {
 
     private OnCsvParserProgress onCsvParserProgress;
     private OnCsvParserResult onCsvParserResult;
-    private List<HostingEntity> hostingEntities = new ArrayList<>();
+
     private CSVFormat format;
 
     private static CsvParser instance;
-    private Context context;
 
-    CsvParser(Context context) {
-        this.context = context;
+    CsvParser() {
     }
 
-    public static synchronized CsvParser getInstance(Context context) {
+    public static synchronized CsvParser getInstance() {
         if (instance==null){
-            instance = new CsvParser(context);
+            instance = new CsvParser();
         }
         return instance;
     }
@@ -64,10 +64,10 @@ public class CsvParser {
         new ParseAsync(format).execute(file);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class ParseAsync extends AsyncTask<File,String,List<HostingEntity>>{
 
         private CSVFormat format;
-        private CSVParser parser;
 
         public ParseAsync(CSVFormat format){
             this.format = format;
@@ -86,17 +86,28 @@ public class CsvParser {
             Gson gson = new Gson();
             int progress = 0;
             try {
-                parser = new CSVParser(new FileReader(file),format);
+                CSVParser parser = new CSVParser(new FileReader(file), format);
 
-                for (CSVRecord record: parser){
+                for (CSVRecord record:parser.getRecords()){
                     JsonObject j = new JsonObject();
-                    for (Map.Entry<String, Integer> map : parser.getHeaderMap().entrySet()){
+                    for (Map.Entry<String, String> map: record.toMap().entrySet()){
                         String key = map.getKey();
-                        String value = record.get(map.getValue());
+                        String value = map.getValue();
                         if (TextUtils.isEmpty(value))
                             value = "0";
                         j.addProperty(key,value);
                     }
+
+//                }
+//                for (CSVRecord record: parser){
+//                    JsonObject j = new JsonObject();
+//                    for (Map.Entry<String, Integer> map : parser.getHeaderMap().entrySet()){
+//                        String key = map.getKey();
+//                        String value = record.get(map.getValue());
+//                        if (TextUtils.isEmpty(value))
+//                            value = "0";
+//                        j.addProperty(key,value);
+//                    }
                     HostingEntity h = (HostingEntity)gson.fromJson(j,HostingEntity.class);
                     hostingEntities.add(h);
                     progress++;
@@ -105,6 +116,7 @@ public class CsvParser {
                 parser.close();
 
             } catch (IOException ex) {
+                Log.e("KK",ex.getLocalizedMessage().toString());
                 return hostingEntities;
             }
 
