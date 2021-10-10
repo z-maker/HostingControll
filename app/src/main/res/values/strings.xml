@@ -11,4 +11,19 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="action_delete_all">delete all</string>
     <string name="action_update_all">update</string>
+    <string name="label_total_clients">Managed pages</string>
+    <string name="label_actives">Active</string>
+    <string name="label_warning">Warning</string>
+    <string name="label_shutdown">Shutdown</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_clients">Clients</string>
+    <string name="title_stats">Hosting Controll</string>
+    <string name="input_client">Client Manager Name</string>
+    <string name="input_client_brand">Brand</string>
+    <string name="input_client_mail">e-mail</string>
+    <string name="input_client_phone">Contact Phone</string>
+    <string name="action_save">Save</string>
 </resources>

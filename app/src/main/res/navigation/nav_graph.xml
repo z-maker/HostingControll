@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.iron.hostingcontroll.FirstFragment"
+        android:name="com.iron.v1.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.iron.hostingcontroll.SecondFragment"
+        android:name="com.iron.v1.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
@@ -25,4 +25,9 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/mainStats"
+        android:name="com.iron.hostingcontroll.ui.home.MainStats"
+        android:label="main_stats_fragment"
+        tools:layout="@layout/main_stats_fragment" />
 </navigation>
